@@ -4,6 +4,7 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Enums\ProductStatus;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,20 +18,32 @@ use App\Enums\ProductStatus;
 */
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::post('/products', [ProductController::class, 'store'])->name('products.store');
 #model binding with routeKeyname
 Route::get('/products/{product:name}', [ProductController::class, 'show'])->name('products.show');
-Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
-Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 # search
 Route::get('/products/search/{name}', [ProductController::class, 'search'])->name('products.search');
+
+
+/// Register toute
+Route::post('/register', [AuthController::class, 'register']);
+
+
+### single middleware 1
+//Route::middleware('auth:sanctum')->get('/products/search/{name}', [ProductController::class, 'search']);
+
+### single middleware 2
+//Route::get('/products/search/{name}', [ProductController::class, 'search'])->middleware('auth:sanctum');
+
+### Group Middleware
+Route::group(['middleware' => 'auth:sanctum'], function() {
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+});
+
+//Route::group(['middleware' => ['auth'], 'prefix' => 'admin'])
 
 ## works for php 8.1
 Route::get('status/{productstatus}', function(ProductStatus $productstatus) {
     return $productstatus->value;
-});
-
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
 });
