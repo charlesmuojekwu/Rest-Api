@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Rules\ProductNameUppercase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
@@ -19,7 +20,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {   
        $request->validate([
-           'name' => 'required',
+           'name' => ['required',new ProductNameUppercase],
            'slug' => 'required',
            'price' => 'required'
        ]);

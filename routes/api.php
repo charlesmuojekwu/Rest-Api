@@ -24,8 +24,9 @@ Route::get('/products/{product:name}', [ProductController::class, 'show'])->name
 Route::get('/products/search/{name}', [ProductController::class, 'search'])->name('products.search');
 
 
-/// Register toute
+/// Register / login route
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
 
 ### single middleware 1
@@ -39,6 +40,7 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+    Route::get('/logout', [AuthController::class, 'logout']);
 });
 
 //Route::group(['middleware' => ['auth'], 'prefix' => 'admin'])

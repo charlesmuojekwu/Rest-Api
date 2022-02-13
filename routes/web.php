@@ -14,7 +14,16 @@ use App\Http\Controllers\ProductController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+class Service
+{
+    //
+}
+ 
+Route::get('/', function (Service $service) {
+    die(get_class($service));
 });
 
