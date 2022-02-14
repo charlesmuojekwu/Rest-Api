@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Rules\ProductNameUppercase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 
@@ -12,9 +13,20 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        
+        
+         /// policy check
+        // $response = Gate::inspect('viewAny');
+               
+        // if($response->allowed()){
 
-        return $products;
+            $products = Product::all();
+
+            return $products;
+        // }
+
+        // return response(['Message' => $response->message()]);
+            
     }
 
     public function store(Request $request)
@@ -48,17 +60,36 @@ class ProductController extends Controller
 
     public function update(Product $product,Request $request)
     {
-        $product->update($request->all());
+        /// policy check
+        //Gate::authorize('update');
+        $response = Gate::inspect('update');
 
-        return $product;
+        if($response->allowed()){
+
+            $product->update($request->all());
+
+            return $product;
+        }
+
+        return response(['Message' => $response->message()],401);
+        
     }
 
     public function destroy(Product $product)
     {
-        $product->delete();
-        //$product = Product::destroy($id);
+        $response = Gate::inspect('delete',$product);
 
-        return $product;
+        if($response->allowed()){
+
+            $product->delete();
+            //$product = Product::destroy($id);
+            return response([
+                'Message' => 'Deleted successfully'
+            ]);
+        }
+        
+
+        return response(['Message' => $response->message()],401);
     }
 
 
