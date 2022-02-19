@@ -51,6 +51,6 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 //Route::group(['middleware' => ['auth'], 'prefix' => 'admin'])
 
 ## works for php 8.1
-Route::get('status/{productstatus}', function(ProductStatus $productstatus) {
-    return $productstatus->value;
+Route::get('/status', function(ProductStatus $productstatus) {
+    return $productstatus->Pending;
 });
